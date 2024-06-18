@@ -1,13 +1,17 @@
 <template>
-<button @click="onClick">Add</button>
+
 </template>
 
 <script setup>
+import { register, login, logout } from "@/services/adminService";
 
-import { completeBook } from '@/services/bookService';
-
-function onClick(){
-  completeBook(43,true)
+let newUser = {
+  email: 'admin3@email.com',
+  password: 'admin3@email.com'
 }
+
+
+
+//register();
 
 </script>

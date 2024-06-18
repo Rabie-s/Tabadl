@@ -3,69 +3,121 @@ import { useUserStore } from '@/stores/user.js'
 
 // Define routes
 const routes = [
+
+  //Default layout
   {
     path: '/',
-    name: 'Home',
-    component: () => import('@/views/HomeView.vue')
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import('@/views/auth/LoginView.vue')
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () => import('@/views/auth/RegisterView.vue')
-  },
-  {
-    path: '/profile',
-    name: 'Profile',
-    meta: { requiresAuth: true },
-    component: () => import('@/views/user/ProfileView.vue'),
+    name: 'DefaultLayout',
+    component: () => import('@/views/layouts/DefaultLayout.vue'),
     children: [
 
       {
-        path: 'info',
-        name: 'Info',
-        component: () => import('@/views/user/InformationView.vue')
+        path: '/home',
+        name: 'Home',
+        component: () => import('@/views/HomeView.vue')
       },
-      {
-        path: 'user-books',
-        name: 'UserBooks',
-        component: () => import('@/views/user/UserBooksView.vue')
-      }
 
+      {
+        path: '/login',
+        name: 'Login',
+        component: () => import('@/views/auth/LoginView.vue')
+      },
+
+      {
+        path: '/register',
+        name: 'Register',
+        component: () => import('@/views/auth/RegisterView.vue')
+      },
+
+      {
+        path: '/profile',
+        name: 'Profile',
+        meta: { requiresAuth: true },
+        component: () => import('@/views/user/ProfileView.vue'),
+        children: [
+
+          {
+            path: 'info',
+            name: 'Info',
+            component: () => import('@/views/user/InformationView.vue')
+          },
+
+          {
+            path: 'user-books',
+            name: 'UserBooks',
+            component: () => import('@/views/user/UserBooksView.vue')
+          }
+
+
+        ]
+
+      },
+
+      {
+        path: '/books',
+        name: 'Books',
+        component: () => import('@/views/books/BooksView.vue')
+      },
+
+      {
+        path: '/book/:id',
+        name: 'Book',
+        component: () => import('@/views/books/BookView.vue')
+      },
+
+      {
+        path: '/add-book',
+        name: 'AddBook',
+        meta: { requiresAuth: true }, // Metafield to indicate authentication requirement
+        component: () => import('@/views/books/AddBook.vue')
+      },
+
+      {
+        path: '/test',
+        name: 'Test',
+        component: () => import('@/views/TestView.vue')
+      },
+
+      {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: () => import('@/views/404View.vue')
+      },
+
+    ]
+  },
+
+  //End default layout
+
+  //Admin layout
+  {
+    path: '/admin/login',
+    name: 'AdminLogin',
+    component: () => import('@/views/admin/auth/AdminLoginView.vue')
+  },
+
+  {
+    path:'/admin',
+    name:'AdminLayout',
+    component: () => import('@/views/layouts/AdminLayout.vue'),
+    children:[
+
+      {
+        path: '',
+        name: 'AdminHome',
+        component: () => import('@/views/admin/dashboard/AdminHomeView.vue')
+      },
+
+      {
+        path: 'users',
+        name: 'Users',
+        component: () => import('@/views/admin/dashboard/UsersView.vue')
+      }
 
     ]
   }
-  ,
-  {
-    path: '/books',
-    name: 'Books',
-    component: () => import('@/views/books/BooksView.vue')
-  },
-  {
-    path: '/book/:id',
-    name: 'Book',
-    component: () => import('@/views/books/BookView.vue')
-  },
-  {
-    path: '/add-book',
-    name: 'AddBook',
-    meta: { requiresAuth: true }, // Metafield to indicate authentication requirement
-    component: () => import('@/views/books/AddBook.vue')
-  },
-  {
-    path: '/test',
-    name: 'Test',
-    component: () => import('@/views/TestView.vue')
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: ()=>import('@/views/404View.vue')
-  },
+
+
 ]
 
 // Create router instance
