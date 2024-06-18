@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +28,8 @@ class AuthenticatedSessionController extends Controller
 
             $user->tokens()->delete();
 
-            $token = $user->createToken('apiToken');
+            $token = $user->createToken('apiToken',['role:user']);
+            
 
             return response()->json([
                 'user' => $user,

@@ -18,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'type.admin'=> \App\Http\Middleware\AdminMiddleware::class,
+            'type.user'=> \App\Http\Middleware\UserMiddleware::class
         ]);
 
         $middleware->statefulApi();

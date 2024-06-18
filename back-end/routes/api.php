@@ -6,6 +6,8 @@ use App\Http\Controllers\BookController;
 
 require __DIR__ . '/auth.php';
 
+require __DIR__ . '/adminAuth.php';
+
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
