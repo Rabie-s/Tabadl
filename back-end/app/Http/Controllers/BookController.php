@@ -190,4 +190,5 @@ class BookController extends Controller
             return response()->json(['error' => 'Failed to fetch user book'], 500);
         }
     }
+
 }

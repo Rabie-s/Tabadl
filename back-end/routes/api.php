@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\StatisticController;
 
 require __DIR__ . '/auth.php';
 
@@ -24,5 +26,22 @@ Route::prefix('v1')->group(function () {
         Route::put('completed', [BookController::class, 'completed']);
 
         Route::resource('books', BookController::class)->except(['index', 'show']);
+    });
+
+
+    //admin routs
+    Route::prefix('admin')->group(function () {
+
+        Route::prefix('statistics')->group(function(){
+
+            Route::get('totalBooks', [StatisticController::class, 'getTotalBooks']);
+
+            Route::get('totalUsers', [StatisticController::class, 'getTotalUsers']);
+            
+        });
+
+        Route::get('booksWithUsers',[AdminController::class,'getBooksWithUsers']);
+        Route::get('users',[AdminController::class,'getUsers']);
+
     });
 });
