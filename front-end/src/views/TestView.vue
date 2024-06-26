@@ -3,14 +3,9 @@
 </template>
 
 <script setup>
-import { register, login, logout } from "@/services/adminService";
+import { fetchUsersWithBooks } from '@/services/adminService';
 
-let newUser = {
-  email: 'admin3@email.com',
-  password: 'admin3@email.com'
-}
-
-
+console.log(fetchUsersWithBooks())
 
 //register();
 

@@ -58,7 +58,7 @@ async function handelCompleteBook(bookId, boolean) {
     await getAllBooks()
 }
 
-// Function to fetch all books
+// Function to delete book
 async function handelDeleteBook(bookId) {
     await deleteBook(bookId)
     await getAllBooks()

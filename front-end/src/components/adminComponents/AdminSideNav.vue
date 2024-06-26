@@ -1,7 +1,7 @@
 <template>
     <nav class="z-30">
 
-        <div v-show="true" class="w-[288px] h-screen bg-slate-900">
+        <div v-show="props.toggleSideNav" class="w-[288px] h-screen bg-slate-900">
 
             <!-- logo -->
             <div class="p-4">
@@ -23,30 +23,34 @@
 
             <!-- menu -->
             <div class="mt-2 p-1">
-                <RouterLink :to="{ name: 'Users' }">
+                <RouterLink :to="{ name: 'UserLists' }">
                     <div
                         class="flex text-white items-center text-xl gap-x-2 p-2 rounded-lg cursor-pointer hover:bg-slate-400">
                         <i class="fa-solid fa-user"></i>
                         <h4>Users</h4>
                     </div>
                 </RouterLink>
+
+
             </div>
             <!-- end-menu -->
 
             <!-- menu -->
             <div class="mt-2 p-1">
-                <div
-                    class="flex text-white items-center text-xl gap-x-2 p-2 rounded-lg cursor-pointer hover:bg-slate-400">
-                    <i class="fa-solid fa-book"></i>
-                    <h4>Books</h4>
-                </div>
+                <RouterLink :to="{ name: 'BookLists' }">
+                    <div
+                        class="flex text-white items-center text-xl gap-x-2 p-2 rounded-lg cursor-pointer hover:bg-slate-400">
+                        <i class="fa-solid fa-book"></i>
+                        <h4>Books</h4>
+                    </div>
+                </RouterLink>
             </div>
             <!-- end-menu -->
 
             <!-- profile-with-logout -->
             <div class="fixed w-72 bottom-0">
                 <div class="flex items-center justify-between bg-slate-500 m-2 p-4 rounded-lg">
-                    <h3 v-if="admin.isAuth===true" class="text-xl text-white">{{admin.adminData.name}}</h3>
+                    <h3 v-if="admin.isAuth === true" class="text-xl text-white">{{ admin.adminData.name }}</h3>
                     <a class="text-white hover:text-gray-200 cursor-pointer" @click="handelLogout">Log-out</a>
                 </div>
             </div>
@@ -66,5 +70,12 @@ const admin = useAdminStore()
 function handelLogout() {
     admin.logoutResult();
 }
+
+const props = defineProps({
+    toggleSideNav: {
+        type: Boolean,
+    }
+
+})
 
 </script>

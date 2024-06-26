@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import axios from 'axios';
-import { register, login, logout } from "@/services/adminService";
+import { register, login, logout } from "@/services/authAdminService";
 import { toast } from 'vue3-toastify';
 import router from "@/router";
 
