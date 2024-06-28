@@ -13,7 +13,7 @@
                         <th class="text-left text-lg p-2">#</th>
                         <th class="text-left text-lg p-2">Name</th>
                         <th class="text-left text-lg p-2">Email</th>
-                        <th></th>
+                        <th class="text-left text-lg p-2">Phone number</th>
                     </tr>
                 </thead>
 
@@ -22,9 +22,7 @@
                         <td class="text-base p-2 mb-5 whitespace-nowrap">{{ index + 1 }}</td>
                         <td class="text-base p-2 mb-5 whitespace-nowrap">{{ user.name }}</td>
                         <td class="text-base p-2 mb-5 whitespace-nowrap">{{ user.email }}</td>
-                        <td class="space-x-3 whitespace-nowrap">
-                            <a @click="" class="text-red-600 cursor-pointer">Delete</a>
-                        </td>
+                        <td class="text-base p-2 mb-5 whitespace-nowrap">{{ user.phone_number }}</td>
                     </tr>
                 </tbody>
 
@@ -60,13 +58,6 @@ async function getAllUsers(page = 1) {
         toast.error('An unknown error occurred.', { "theme": "colored" });
     }
 
-}
-
-// Function to delete book
-async function handelDeleteBook(bookId) {
-    await deleteBook(bookId)
-    await getAllBooks()
-    toast.success('تم حذف الاعلان بنجاح', { "theme": "colored" })
 }
 
 onMounted(() => {
