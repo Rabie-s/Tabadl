@@ -34,8 +34,18 @@
 
                 <div class="flex flex-col">
                     <label class="m-1 text-sm">رقم الهاتف</label>
-                    <input type="text" v-model="formData.phone_number"
-                        class="bg-white text-sm h-[27px] outline-none rounded-lg px-1" />
+                    <div class="flex">
+
+                        <select v-model="formData.country_code"
+                            class="bg-white text-sm h-[27px] w-20 outline-none rounded-lg px-1">
+                            <option v-for="i, n in countryCodeList" :value="i">{{ n }}</option>
+                            <option value="">الدولة</option>
+                        </select>
+
+                        <input type="text" v-model="formData.phone_number"
+                            class="bg-white text-sm w-full h-[27px] outline-none rounded-lg px-1" />
+
+                    </div>
                     <span class="text-red-500" v-for="error in v$.phone_number.$errors">{{ error.$message }}</span>
                 </div>
 
@@ -60,16 +70,20 @@
 </template>
 
 <script setup>
+import countryCodes from 'country-codes-list'
 import Button from '@/components/Button.vue'
 import { useVuelidate } from '@vuelidate/core'
-import { required, email,minLength,numeric } from '@vuelidate/validators'
+import { required, email, minLength, numeric } from '@vuelidate/validators'
 import { useUserStore } from '@/stores/user.js'
 import { ref } from 'vue';
 const user = useUserStore();
 
+const countryCodeList = countryCodes.customList('countryNameEn', '{countryCallingCode}')
+
 const formData = ref({
     name: '',
     email: '',
+    country_code:'',
     phone_number: '',
     password: ''
 })
@@ -78,15 +92,16 @@ const formData = ref({
 const rules = {
     name: { required },
     email: { required, email },
-    phone_number: { required,numeric },
-    password: { required,minLength:minLength(8) }
+    country_code: {required,numeric},
+    phone_number: { required, numeric },
+    password: { required, minLength: minLength(8) }
 }
 
 const v$ = useVuelidate(rules, formData)
 
 async function handelRegister() {
     const result = await v$.value.$validate()
-    if(result){
+    if (result) {
         await user.registerResult(formData.value)
     }
 }
