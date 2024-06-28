@@ -24,7 +24,7 @@ class AdminController extends Controller
     {
         try {
             // Retrieve the book with the associated user
-            $users = User::select('id','name','email','created_at')->latest()->paginate(8);
+            $users = User::select('id','name','email','phone_number','created_at')->latest()->paginate(8);
             return response()->json($users, 200);
         } catch (\Exception $e) {
             // Return an error response with status code 500 if an exception occurs
