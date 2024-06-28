@@ -28,20 +28,24 @@ Route::prefix('v1')->group(function () {
         Route::resource('books', BookController::class)->except(['index', 'show']);
     });
 
-
+    
     //admin routs
-    Route::prefix('admin')->group(function () {
+    Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
 
-        Route::prefix('statistics')->group(function(){
+        Route::prefix('admin')->group(function () {
 
-            Route::get('totalBooks', [StatisticController::class, 'getTotalBooks']);
+            Route::prefix('statistics')->group(function () {
 
-            Route::get('totalUsers', [StatisticController::class, 'getTotalUsers']);
-            
+                Route::get('totalBooks', [StatisticController::class, 'getTotalBooks']);
+
+                Route::get('totalUsers', [StatisticController::class, 'getTotalUsers']);
+            });
+
+            Route::get('booksWithUsers', [AdminController::class, 'getBooksWithUsers']);
+
+            Route::get('users', [AdminController::class, 'getUsers']);
+
         });
-
-        Route::get('booksWithUsers',[AdminController::class,'getBooksWithUsers']);
-        Route::get('users',[AdminController::class,'getUsers']);
 
     });
 });
