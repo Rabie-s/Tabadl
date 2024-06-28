@@ -28,11 +28,13 @@ Route::prefix('v1')->group(function () {
         Route::resource('books', BookController::class)->except(['index', 'show']);
     });
 
-    
-    //admin routs
-    Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
 
-        Route::prefix('admin')->group(function () {
+    //admin routs
+
+
+    Route::prefix('admin')->group(function () {
+
+        Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
 
             Route::prefix('statistics')->group(function () {
 
@@ -45,7 +47,7 @@ Route::prefix('v1')->group(function () {
 
             Route::get('users', [AdminController::class, 'getUsers']);
 
+            Route::get('deleteBook/{id}', [AdminController::class, 'deleteBook']);
         });
-
     });
 });
