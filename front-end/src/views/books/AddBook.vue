@@ -62,6 +62,7 @@ const user = useUserStore();
 const inputImage = ref(null)
 const formData = ref({
     image: '',
+    imageExtension: '',
     title: '',
     status: '',
     description: '',
@@ -70,15 +71,14 @@ const formData = ref({
 // Catch a file inside file input
 async function onFileChange(e) {
     const file = await e.target.files[0]
+    const fileExtension = file.name.split(".").pop()
+    formData.value.imageExtension = fileExtension
 
     var options = {
         file: file,
         quality: 0.6,
-        mimeType: 'image/jpeg',
         maxWidth: 2000,
         maxHeight: 2000,
-        width: 1000,
-        height: 1000,
         minWidth: 500,
         minHeight: 500,
         convertSize: Infinity,
@@ -118,7 +118,7 @@ async function submit() {
         if (addBookResult === 201) {
             toast.success('تم نشر الاعلان بنجاح', { "theme": "colored" })
             clear()
-        }else{
+        } else {
             toast.error('An unknown error occurred.', { "theme": "colored" });
         }
     }

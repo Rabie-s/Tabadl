@@ -52,8 +52,7 @@ class BookController extends Controller
     public function store(StoreBookRequest $request)
     {
         // Generate a random filename and move the uploaded image to the desired location
-        $getFileExtension = $request->file('image_path')->getClientOriginalExtension(); //get extension of file
-        $newFileName = (string)rand() . '.' . $getFileExtension; //merge random string and file extension
+        $newFileName = (string)rand() . '.' . $request->image_extension; //merge random string and file extension
         $request->file('image_path')->move('images', $newFileName);
 
         // Create a new book instance and save it

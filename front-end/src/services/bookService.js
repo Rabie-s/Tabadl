@@ -42,6 +42,7 @@ export async function addBook(data, userId) {
             {
                 // Book data to be sent in the request
                 title: data.value.title,
+                image_extension: data.value.imageExtension,
                 image_path: data.value.image,
                 status: data.value.status,
                 description: data.value.description,
