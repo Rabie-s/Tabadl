@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use File;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use App\Http\Resources\BookResource;
@@ -138,6 +139,11 @@ class BookController extends Controller
             // Delete the found book
             $book->delete();
 
+            //delete image from public path
+            if (File::exists(public_path('images/' . $book->image_path))) {
+                File::delete(public_path('images/' . $book->image_path));
+            }
+
             // Return a success message if the book is deleted successfully
             return response()->json(['message' => 'Book deleted successfully'], 200);
         } catch (\Exception $e) {
@@ -184,10 +190,9 @@ class BookController extends Controller
 
             // Retrieve and return the books belonging to the authenticated user that are not yet completed
             $books = $user->books()->where('done', 0)->latest()->get();
-            return response()->json($books,200);
+            return response()->json($books, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch user book'], 500);
         }
     }
-
 }
