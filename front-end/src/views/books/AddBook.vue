@@ -27,6 +27,17 @@
                     <span class="text-red-500" v-for="error in v$.description.$errors">{{ error.$message }}</span>
                 </div>
 
+                <!-- Book type Select -->
+                <div class="flex flex-col">
+                    <label class="m-1 text-sm">نوع الكتاب</label>
+                    <select v-model="formData.bookLevel"
+                        class="w-full bg-white text-sm h-[27px] outline-none rounded-lg px-1">
+                        <option value="1">دبلوم</option>
+                        <option value="2">بكالوريوس</option>
+                    </select>
+                    <span class="text-red-500" v-for="error in v$.status.$errors">{{ error.$message }}</span>
+                </div>
+
                 <!-- Status Select -->
                 <div class="flex flex-col">
                     <label class="m-1 text-sm">طلب ولا عرض؟</label>
@@ -64,6 +75,7 @@ const formData = ref({
     image: '',
     imageExtension: '',
     title: '',
+    bookLevel: '',
     status: '',
     description: '',
 })
@@ -103,6 +115,7 @@ async function onFileChange(e) {
 const rules = {
     image: { required },
     title: { required },
+    bookLevel: { required },
     status: { required },
     description: { required }
 }
@@ -129,6 +142,7 @@ async function submit() {
 function clear() {
     formData.value.image = ''
     formData.value.title = ''
+    formData.value.bookLevel = ''
     formData.value.status = ''
     formData.value.description = ''
     inputImage.value.value = null

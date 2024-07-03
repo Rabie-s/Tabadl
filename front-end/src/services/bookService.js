@@ -12,9 +12,9 @@ async function fetchCsrfCookie() {
     }
 }
 
-export async function fetchBooks(page, status = '', search = '') {
+export async function fetchBooks(page, status = '',bookLevel='', search = '') {
     try {
-        const response = await axios.get(`v1/books?page=${page}&status=${status}&search=${search}`);
+        const response = await axios.get(`v1/books?page=${page}&status=${status}&book_level=${bookLevel}&search=${search}`);
         return response
     } catch (error) {
         console.error('Error fetching books:', error);
@@ -42,6 +42,7 @@ export async function addBook(data, userId) {
             {
                 // Book data to be sent in the request
                 title: data.value.title,
+                book_level:data.value.bookLevel,
                 image_extension: data.value.imageExtension,
                 image_path: data.value.image,
                 status: data.value.status,

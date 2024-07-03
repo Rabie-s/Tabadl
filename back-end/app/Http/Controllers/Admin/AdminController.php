@@ -42,8 +42,8 @@ class AdminController extends Controller
             //delete book from database
             $book->delete();
             //delete image from public path
-            if(File::exists(public_path('images/'.$book->image_path))){
-                File::delete(public_path('images/'.$book->image_path));
+            if (File::exists(public_path('images/' . $book->image_path))) {
+                File::delete(public_path('images/' . $book->image_path));
             }
             //return response
             return response()->json(['message' => 'Book deleted successfully'], 200);

@@ -1,7 +1,7 @@
 <template>
     <div class="container mx-auto">
         <!-- Filter section -->
-        <div class="bg-gray-200 p-1 rounded-lg m-3">
+        <div class="flex gap-x-4 bg-gray-200 p-1 rounded-lg m-3">
             <div>
                 <label class="m-1 text-sm">طلب ولا عرض؟</label>
                 <select @change="getAllBooks" v-model="filters.status"
@@ -11,12 +11,23 @@
                     <option value="2">مطلوب</option>
                 </select>
             </div>
+
+            <div>
+                <label class="m-1 text-sm">مرحلة الكتاب</label>
+                <select @change="getAllBooks" v-model="filters.bookLevel"
+                    class="bg-white text-sm h-[27px] outline-none rounded-lg px-1">
+                    <option value="">الكل</option>
+                    <option value="1">دبلوم</option>
+                    <option value="2">بكالوريوس</option>
+                </select>
+            </div>
         </div>
 
         <!-- Search section -->
         <div class="bg-gray-200 p-1 rounded-lg m-3 flex gap-x-2">
             <label class="m-1 text-sm">بحث</label>
-            <input v-model="filters.search" @keyup="resat" class="bg-white text-sm h-[27px] outline-none rounded-lg px-1" />
+            <input v-model="filters.search" @keyup="resat"
+                class="bg-white text-sm h-[27px] outline-none rounded-lg px-1" />
             <Button @click="getAllBooks" class="h-auto" color="blue">بحث</Button>
         </div>
 
@@ -53,6 +64,7 @@ const imagePath = import.meta.env.VITE_IMAGE_PATHS
 
 const filters = ref({
     status: '',
+    bookLevel: '',
     search: ''
 })
 const booksData = ref({});
@@ -61,7 +73,7 @@ const booksData = ref({});
 // Function to fetch all books
 async function getAllBooks(page = 1) {
 
-    const booksResult = await fetchBooks(page, filters.value.status, filters.value.search)
+    const booksResult = await fetchBooks(page, filters.value.status, filters.value.bookLevel, filters.value.search)
     if (booksResult.status === 200) {
         booksData.value = booksResult.data
     } else {
@@ -70,8 +82,8 @@ async function getAllBooks(page = 1) {
 
 }
 
-function resat(){
-    if(filters.value.search==''){
+function resat() {
+    if (filters.value.search == '') {
         getAllBooks()
     }
 }

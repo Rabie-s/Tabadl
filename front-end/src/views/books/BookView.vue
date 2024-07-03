@@ -2,9 +2,9 @@
   <div class="container mx-auto">
     <div class="md:mx-60">
       <div class="flex flex-row-reverse">
-        <button @click="bb">Get back</button>
+        <button @click="getBack" class="">Get back</button>
       </div>
-      
+
       <!-- Loading indicator -->
       <div v-if="isLoading" class="bg-gray-200 flex justify-center py-2 rounded-lg">
         Loading...
@@ -20,16 +20,30 @@
           <Button class="w-full" color="green">تواصل على الواتس</Button>
         </a>
       </div>
+
       <!-- Publisher details -->
       <div v-if="book.user" class="bg-gray-200 p-2 m-2 rounded-lg space-y-4">
         <h1 class="text-lg">اسم الناشر : {{ book.user.name }}</h1>
       </div>
+
+      <!-- Book level details -->
+      <div class="bg-gray-200 p-2 m-2 rounded-lg space-y-4">
+        <h1 v-if="book.book_level == 1" class="text-lg">مرحلة الكتاب: دبلوم</h1>
+        <h1 v-if="book.book_level == 2" class="text-lg">مرحلة الكتاب: بكالوريوس</h1>
+      </div>
+
+      <!-- Status details -->
+      <div class="bg-gray-200 p-2 m-2 rounded-lg space-y-4">
+        <h1 v-if="book.status == 1" class="text-lg">حالة العرض: معروض</h1>
+        <h1 v-else="book.status == 1" class="text-lg">حالة العرض: مطلوب</h1>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { useRoute,useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Button from '@/components/Button.vue'
 import { onMounted, ref } from 'vue'
 import { fetchBook } from '@/services/bookService';
@@ -55,7 +69,7 @@ async function getBook(id) {
 
 }
 
-function bb(){
+function getBack() {
   router.back()
 }
 

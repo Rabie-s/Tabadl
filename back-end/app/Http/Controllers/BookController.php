@@ -20,6 +20,7 @@ class BookController extends Controller
     {
         // Get the search query and status from the request
         $status = $request->query('status');
+        $book_level = $request->query('book_level');
         $search = $request->query('search');
 
         // Start building the query with pagination
@@ -28,6 +29,11 @@ class BookController extends Controller
         // If status is provided, filter by status
         if ($status !== null) {
             $query->where('status', $status);
+        }
+
+        // If status is provided, filter by book level
+        if($book_level !== null){
+            $query->where('book_level',$book_level);
         }
 
         // If search query is provided, filter by title or other relevant fields
@@ -59,6 +65,7 @@ class BookController extends Controller
         // Create a new book instance and save it
         $book = new Book();
         $book->title = $request->title;
+        $book->book_level = $request->book_level;
         $book->image_path = $newFileName;
         $book->status = $request->status;
         $book->description = $request->description;
