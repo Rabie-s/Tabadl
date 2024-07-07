@@ -10,7 +10,7 @@
             <RouterView />
         </div>
 
-        <i @click="toggleSideNav = !toggleSideNav" class="fa-solid fa-bars text-2xl h-7 m-5"></i>
+        <i @click="toggleSideNav = !toggleSideNav" class="fa-solid fa-bars text-2xl h-7 m-5 cursor-pointer"></i>
 
     </div>
 

@@ -23,6 +23,12 @@
         <slot />
     </button>
 
+        <!--if prop color is slate-->
+        <button v-bind="$attrs" v-if="props.color === 'slate'"
+        class="bg-slate-800 hover:bg-slate-700 text-white w-[135px] h-[35px] flex justify-center items-center rounded-lg">
+        <slot />
+    </button>
+
 </template>
 
 <script setup>

@@ -9,6 +9,32 @@
             </div>
             <!-- end-logo -->
 
+            <!-- menu-with-sub-menu -->
+            <div class="group p-2">
+                <div class="group flex items-center justify-between cursor-pointer hover:bg-slate-400 rounded-lg p-2">
+                    <div class="flex text-white items-center text-xl gap-x-2">
+                        <i class="fa-solid fa-user"></i>
+                        <h4>Admins</h4>
+                    </div>
+                    <i class="fa-solid fa-caret-down text-white text-xl group-hover:rotate-180"></i>
+                </div>
+
+                <div class="bg-slate-700 text-white rounded-lg hidden group-hover:block">
+                    <RouterLink :to="{ name: 'AdminLists' }">
+                        <h1 class="text-base mt-1 rounded-lg p-1 cursor-pointer hover:text-black hover:bg-white">
+                            Admins
+                        </h1>
+                    </RouterLink>
+
+                    <RouterLink :to="{ name: 'AddAdmin' }">
+                        <h1 class="text-base mt-1 rounded-lg p-1 cursor-pointer hover:text-black hover:bg-white">
+                            Create Admin
+                        </h1>
+                    </RouterLink>
+                </div>
+            </div>
+            <!-- end-menu-with-sub-menu -->
+
             <!-- menu -->
             <div class="mt-2 p-1">
                 <RouterLink :to="{ name: 'AdminHome' }">

@@ -45,8 +45,10 @@ const routes = [
     component: () => import('@/views/layouts/AdminLayout.vue'),
     children: [
       { path: '/admin', name: 'AdminHome', component: () => import('@/views/admin/dashboard/AdminHomeView.vue') },
+      { path: 'add-admin', name: 'AddAdmin', component: () => import('@/views/admin/dashboard/admin/AddAdminView.vue') },
+      { path: 'admin-lists', name: 'AdminLists', component: () => import('@/views/admin/dashboard/admin/AdminListsView.vue') },
       { path: 'book-lists', name: 'BookLists', component: () => import('@/views/admin/dashboard/BookListsView.vue') },
-      { path: 'user-lists', name: 'UserLists', component: () => import('@/views/admin/dashboard/UserListsView.vue') }
+      { path: 'user-lists', name: 'UserLists', component: () => import('@/views/admin/dashboard/UserListsView.vue') },
     ]
   }
 ];

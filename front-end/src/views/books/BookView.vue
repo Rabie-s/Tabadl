@@ -16,7 +16,7 @@
         <h2 class="text-lg">{{ book.created_at }}</h2>
         <!-- WhatsApp button -->
         <a v-if="book.user" aria-label="Chat on WhatsApp"
-          :href="'https://wa.me/' + book.user.phone_number + '?' + message">
+          :href="'https://wa.me/' + book.user.phone_number + '?text=' + message">
           <Button class="w-full" color="green">تواصل على الواتس</Button>
         </a>
       </div>
@@ -28,14 +28,12 @@
 
       <!-- Book level details -->
       <div class="bg-gray-200 p-2 m-2 rounded-lg space-y-4">
-        <h1 v-if="book.book_level == 1" class="text-lg">مرحلة الكتاب: دبلوم</h1>
-        <h1 v-if="book.book_level == 2" class="text-lg">مرحلة الكتاب: بكالوريوس</h1>
+        <h1 class="text-lg">مرحلة الكتاب: {{ bookLevelText }}</h1>
       </div>
 
       <!-- Status details -->
       <div class="bg-gray-200 p-2 m-2 rounded-lg space-y-4">
-        <h1 v-if="book.status == 1" class="text-lg">حالة العرض: معروض</h1>
-        <h1 v-else="book.status == 1" class="text-lg">حالة العرض: مطلوب</h1>
+        <h1 class="text-lg">حالة العرض: {{ statusText }}</h1>
       </div>
 
     </div>
@@ -45,7 +43,7 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import Button from '@/components/Button.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { fetchBook } from '@/services/bookService';
 const route = useRoute()
 const router = useRouter()
@@ -53,7 +51,7 @@ const bookId = route.params.id
 const imagePath = import.meta.env.VITE_IMAGE_PATHS
 const book = ref({})
 const isLoading = ref(true)
-const message = 'test'
+const message = 'مرحبا%20لقد وجدت%20اعلانك%20عن%20طريق%20موقع%20تبادل'
 
 // Function to fetch book details from the server
 async function getBook(id) {
@@ -72,6 +70,29 @@ async function getBook(id) {
 function getBack() {
   router.back()
 }
+
+// Computed properties
+const bookLevelText = computed(() => {
+  switch (book.value.book_level) {
+    case 1:
+      return 'دبلوم';
+    case 2:
+      return 'بكالوريوس';
+    default:
+      return 'غير معروفة';
+  }
+});
+
+const statusText = computed(() => {
+  switch (book.value.status) {
+    case 1:
+      return 'معروض';
+    case 2:
+      return 'مطلوب';
+    default:
+      return 'غير محددة';
+  }
+});
 
 
 // Fetch book details when component is mounted
