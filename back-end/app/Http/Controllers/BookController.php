@@ -2,115 +2,123 @@
 
 namespace App\Http\Controllers;
 
-use File;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use App\Http\Resources\BookResource;
 use App\Http\Requests\StoreBookRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BookController extends Controller
 {
+
     /**
-     * Display a listing of the resource.
+     * Display a paginated list of books based on filters.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request)
     {
-        // Get the search query and status from the request
+        // Get the search query, status, and book level from the request
         $status = $request->query('status');
         $book_level = $request->query('book_level');
         $search = $request->query('search');
 
-        // Start building the query with pagination
+        // Start building the query for books
         $query = Book::query();
 
-        // If status is provided, filter by status
+        // Filter by status if provided
         if ($status !== null) {
             $query->where('status', $status);
         }
 
-        // If status is provided, filter by book level
-        if($book_level !== null){
-            $query->where('book_level',$book_level);
+        // Filter by book level if provided
+        if ($book_level !== null) {
+            $query->where('book_level', $book_level);
         }
 
-        // If search query is provided, filter by title or other relevant fields
+        // Filter by search query if provided (search by title)
         if ($search !== null) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', '%' . $search . '%');
             });
         }
 
-        // Paginate the results
+        // Paginate the results and fetch books not marked as done
         $books = $query->where('done', 0)->latest()->paginate(10);
 
-        // Return the paginated list of books as a collection of BookResource
         return BookResource::collection($books);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created book resource in storage.
      *
-     * @param  \Illuminate\Http\StoreBookRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param  StoreBookRequest  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreBookRequest $request)
     {
-        // Generate a random filename and move the uploaded image to the desired location
-        $newFileName = (string)rand() . '.' . $request->image_extension; //merge random string and file extension
-        $request->file('image_path')->move('images', $newFileName);
-
-        // Create a new book instance and save it
-        $book = new Book();
-        $book->title = $request->title;
-        $book->book_level = $request->book_level;
-        $book->image_path = $newFileName;
-        $book->status = $request->status;
-        $book->description = $request->description;
-        $book->user_id = $request->user_id;
-        $book->save();
-
-        // Return a success response with status code 201
-        return response()->json(['success' => 'Created successful'], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(string $id)
-    {
         try {
-            // Retrieve the book with the associated user
-            $book = Book::with('user')->where('id', $id)->get();
-            return response()->json($book, 201);
+            // Store the uploaded image, if provided
+            if ($request->file('image_path')) {
+                $image = storeImage($request->file('image_path'));
+            }
+
+            // Create a new book record associated with the authenticated user
+            $authenticatedUser = auth()->user();
+            $authenticatedUser->books()->create([
+                'title' => $request->title,
+                'book_level' => $request->book_level,
+                'image_path' => $image ?? null, // Optional image path
+                'status' => $request->status,
+                'description' => $request->description,
+                'active' => $request->active ?? true, // Set default active status
+                'done' => $request->done ?? false, // Set default done status
+            ]);
+
+            // Return success response
+            return response()->json(['success' => 'Book created successfully'], 201);
         } catch (\Exception $e) {
-            // Return an error response with status code 500 if an exception occurs
-            return response()->json(['error' => 'Failed to show book'], 500);
+            // Return error response if any exception occurs
+            return response()->json(['error' => 'Failed to create book'], 409);
         }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Display the specified book resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  string  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(string $id)
+    {
+        try {
+            // Find the book by ID with the associated user
+            $book = Book::with('user')->where('id', $id)->get();
+            return response()->json($book, 201);
+        } catch (ModelNotFoundException $e) {
+            // Return error response if book with the given ID is not found
+            return response()->json(['error' => 'Book not found'], 500);
+        }
+    }
+
+    /**
+     * Update the specified book resource in storage.
+     *
+     * @param  Request  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, string $id)
     {
         try {
             // Get the authenticated user
-            $user = auth()->user();
+            $authenticatedUser = auth()->user();
 
-            // Find the book belonging to the authenticated user by ID
-            $book = $user->books()->findOrFail($id);
+            // Find the book associated with the authenticated user by ID
+            $book = $authenticatedUser->books()->findOrFail($id);
 
-            // Update the book with the provided data
+            // Update the book attributes with the provided data
             $book->update($request->only([
                 'title',
                 'image_path',
@@ -120,86 +128,89 @@ class BookController extends Controller
                 'done',
             ]));
 
-            // Return a success response with status code 201
-            return response()->json(['success' => 'Updated successful'], 201);
+            // Return success response
+            return response()->json(['success' => 'Book updated successfully'], 201);
         } catch (\Exception $e) {
-            // Return an error response with status code 500 if an exception occurs
+            // Return error response if any exception occurs
             return response()->json(['error' => 'Failed to update book'], 500);
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified book resource from storage.
      *
      * @param  string  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id)
     {
         try {
             // Get the authenticated user
-            $user = auth()->user();
+            $authenticatedUser = auth()->user();
 
-            // Find the book belonging to the authenticated user by ID
-            $book = $user->books()->findOrFail($id);
+            // Find the book associated with the authenticated user by ID
+            $book = $authenticatedUser->books()->findOrFail($id);
 
-            // Delete the found book
+            // Delete the book record
             $book->delete();
 
-            //delete image from public path
-            if (File::exists(public_path('images/' . $book->image_path))) {
-                File::delete(public_path('images/' . $book->image_path));
-            }
+            // Delete associated image from storage
+            deleteImage($book->image_path);
 
-            // Return a success message if the book is deleted successfully
+            // Return success message
             return response()->json(['message' => 'Book deleted successfully'], 200);
         } catch (\Exception $e) {
-            // Return an error response with status code 500 if an exception occurs
+            // Return error response if any exception occurs
             return response()->json(['error' => 'Failed to delete book'], 500);
         }
     }
 
     /**
-     * Mark the specified resource as completed.
+     * Mark the specified book as completed.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function completed(Request $request)
     {
         try {
             // Get the authenticated user
-            $user = auth()->user();
+            $authenticatedUser = auth()->user();
 
-            // Find the book belonging to the authenticated user by ID and update its completion status
-            $book = $user->books()->where('id', $request->id)->first(); // Use first() instead of get()
+            // Find the book associated with the authenticated user by ID
+            $book = $authenticatedUser->books()->where('id', $request->id)->first();
+
+            // Update the 'done' status of the book
             $book->done = $request->done;
             $book->save();
 
-            // Return a success response with status code 200
+            // Return success response
             return response()->json(['success' => 'Book marked as completed'], 200);
         } catch (\Exception $e) {
-            // Return an error response with status code 500 if an exception occurs
+            // Return error response if any exception occurs
             return response()->json(['error' => 'Failed to complete book'], 500);
         }
     }
 
     /**
-     * Display a listing of the authenticated user's books.
+     * Display all books of the authenticated user.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function showUserBooks()
     {
         try {
             // Get the authenticated user
-            $user = auth()->user();
+            $authenticatedUser = auth()->user();
 
-            // Retrieve and return the books belonging to the authenticated user that are not yet completed
-            $books = $user->books()->where('done', 0)->latest()->get();
+            // Retrieve all books associated with the authenticated user that are not marked as done
+            $books = $authenticatedUser->books()->where('done', 0)->latest()->get();
+
+            // Return the list of books
             return response()->json($books, 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch user book'], 500);
+        } catch (ModelNotFoundException $e) {
+            // Return error response if user's books are not found
+            return response()->json(['error' => 'Failed to fetch user books'], 500);
         }
     }
 }
