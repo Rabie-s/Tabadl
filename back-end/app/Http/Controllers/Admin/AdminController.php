@@ -5,14 +5,20 @@ namespace App\Http\Controllers\Admin;
 use File;
 use App\Models\Book;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
-    public function getBooksWithUsers()
+    /**
+     * Retrieve books with associated users.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getBooksWithUsers(): JsonResponse
     {
         try {
-            // Retrieve the book with the associated user
+            // Retrieve the books with the associated user
             $BooksWithUsers = Book::select('id', 'user_id', 'title', 'created_at')->with('user:id,name')->latest()->paginate(8);
             return response()->json($BooksWithUsers, 200);
         } catch (\Exception $e) {
@@ -21,10 +27,15 @@ class AdminController extends Controller
         }
     }
 
-    public function getUsers()
+    /**
+     * Retrieve users.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUsers(): JsonResponse
     {
         try {
-            // Retrieve the book with the associated user
+            // Retrieve the users
             $users = User::select('id', 'name', 'email', 'phone_number', 'created_at')->latest()->paginate(8);
             return response()->json($users, 200);
         } catch (\Exception $e) {
@@ -33,23 +44,28 @@ class AdminController extends Controller
         }
     }
 
-    public function deleteBook(string $id)
+    /**
+     * Delete a book by ID.
+     *
+     * @param string $id The ID of the book to delete
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteBook(string $id): JsonResponse
     {
-
         try {
-            //get book data
+            // Get book data
             $book = Book::findOrFail($id);
-            //delete book from database
+            // Delete book from database
             $book->delete();
-            //delete image from public path
+            // Delete image from public path
             if (File::exists(public_path('images/' . $book->image_path))) {
                 File::delete(public_path('images/' . $book->image_path));
             }
-            //return response
+            // Return success message
             return response()->json(['message' => 'Book deleted successfully'], 200);
         } catch (\Exception $e) {
             // Return an error response with status code 500 if an exception occurs
-            return response()->json(['error' => 'Failed to fetch users:', $e], 500);
+            return response()->json(['error' => 'Failed to delete book:', $e], 500);
         }
     }
 }
