@@ -10,16 +10,16 @@
             <!-- end-logo -->
 
             <!-- menu-with-sub-menu -->
-            <div class="group p-2">
-                <div class="group flex items-center justify-between cursor-pointer hover:bg-slate-400 rounded-lg p-2">
+            <div class="p-2">
+                <div @click="toggleAdminsSubMenu =! toggleAdminsSubMenu" class="flex items-center justify-between cursor-pointer hover:bg-slate-400 rounded-lg p-2">
                     <div class="flex text-white items-center text-xl gap-x-2">
                         <i class="fa-solid fa-user"></i>
                         <h4>Admins</h4>
                     </div>
-                    <i class="fa-solid fa-caret-down text-white text-xl group-hover:rotate-180"></i>
+                    <i class="fa-solid fa-caret-down text-white text-xl"></i>
                 </div>
 
-                <div class="bg-slate-700 text-white rounded-lg hidden group-hover:block">
+                <div v-show="toggleAdminsSubMenu" class="bg-slate-700 text-white rounded-lg">
                     <RouterLink :to="{ name: 'AdminLists' }">
                         <h1 class="text-base mt-1 rounded-lg p-1 cursor-pointer hover:text-black hover:bg-white">
                             Admins
@@ -90,8 +90,10 @@
 
 <script setup>
 import { useAdminStore } from '@/stores/admin.js'
+import { ref } from 'vue';
 
 const admin = useAdminStore()
+const toggleAdminsSubMenu = ref(false)
 
 function handelLogout() {
     admin.logoutResult();
