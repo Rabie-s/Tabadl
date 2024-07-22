@@ -16,6 +16,3 @@ Route::get('admin/fetchAdmins', [AuthController::class, 'fetchAdmins'])->middlew
 
 Route::delete('admin/deleteAdmin/{id}',[AuthController::class, 'deleteAdmin'])->middleware(['auth:sanctum', 'type.admin']);
 
-Route::middleware(['auth:sanctum', 'type.admin'])->get('admin/info', function (Request $request) {
-    return 'test';
-});
