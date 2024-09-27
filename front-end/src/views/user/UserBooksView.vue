@@ -1,41 +1,43 @@
 <template>
-
-    <div class="overflow-auto rounded-lg shadow my-4">
-        <table dir="ltr" class="text-black w-full">
-            <thead class="border-b-2 bg-gray-200">
-                <tr>
-                    <th class="text-left text-lg p-2">#</th>
-                    <th class="text-left text-lg p-2">عنوان الكتاب</th>
-                    <th class="text-left text-lg p-2">تاريخ النشر</th>
-                    <th class="text-left text-lg p-2">هل تمت العملية</th>
-                </tr>
-            </thead>
-
-            <tbody v-for="(book, index) in booksData">
-
-                <tr class="odd:bg-gray-100">
-                    <td class="text-base p-2 mb-5 whitespace-nowrap">{{ index + 1 }}</td>
-                    <td class="text-base p-2 mb-5 whitespace-nowrap">{{ book.title }}</td>
-                    <td class="text-base p-2 mb-5 whitespace-nowrap">{{ book.created_at }}</td>
-                    <td class="flex gap-x-1">
-                        <Button @click="handelCompleteBook(book.id, true)" class="w-[50px] h-[30px]"
-                            color="green">نعم</Button>
-                            <Button @click="handelDeleteBook(book.id)" class="w-[50px] h-[30px]"
-                            color="red"><i class="fa-solid fa-trash-can"></i></Button>
-                    </td>
-                </tr>
-
-            </tbody>
-
-        </table>
+    <div class="my-4 rounded-lg shadow overflow-hidden">
+        <div class="w-full overflow-x-auto">
+            <table dir="rtl" class="min-w-full text-black">
+                <thead class="bg-gray-200 border-b-2">
+                    <tr>
+                        <th class="px-4 py-2 text-right text-lg">#</th>
+                        <th class="px-4 py-2 text-right text-lg">عنوان الكتاب</th>
+                        <th class="px-4 py-2 text-right text-lg">تاريخ النشر</th>
+                        <th class="px-4 py-2 text-right text-lg">هل تمت العملية</th>
+                        <th class="px-4 py-2 text-right text-lg">حذف الاعلان</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(book, index) in booksData" :key="book.id" class="odd:bg-gray-100">
+                        <td class="px-4 py-2 whitespace-nowrap text-base">{{ index + 1 }}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-base">{{ book.title }}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-base">{{ book.created_at }}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-base">
+                            <Button @click="handelCompleteBook(book.id, true)" class="w-12 h-8" color="green">
+                                نعم
+                            </Button>
+                        </td>
+                        <td class="px-4 py-2 whitespace-nowrap text-base">
+                            <Button @click="handelDeleteBook(book.id)" class="w-12 h-8" color="red">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </Button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-
 </template>
+
 <script setup>
 import Button from '@/components/Button.vue'
 import axios from 'axios'
 import { onMounted, ref } from 'vue';
-import { completeBook,deleteBook } from '@/services/bookService';
+import { completeBook, deleteBook } from '@/services/bookService';
 import { toast } from 'vue3-toastify';
 
 
@@ -45,7 +47,7 @@ const booksData = ref({});
 // Function to fetch all books
 async function getAllBooks() {
     try {
-        const response = await axios.get('v1/userBooks');
+        const response = await axios.get('user/userBooks');
         booksData.value = response.data;
     } catch (error) {
         console.error('Error fetching books:', error);
@@ -63,6 +65,11 @@ async function handelDeleteBook(bookId) {
     await deleteBook(bookId)
     await getAllBooks()
     toast.success('تم حذف الاعلان بنجاح', { "theme": "colored" })
+}
+
+// Function to get full image path for a book
+function getImagePath(imagePathFromServer) {
+    return `${imagePath}${imagePathFromServer}`;
 }
 
 

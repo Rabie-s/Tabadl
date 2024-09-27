@@ -44,7 +44,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { fetchBooksWithUsers,deleteBook } from '@/services/adminService';
+import { fetchBooksWithUsers,deleteBook } from '@/services/admin/adminService';
 import TailwindPagination from '@/components/TailwindPagination/TailwindPagination.vue'
 import { toast } from 'vue3-toastify';
 

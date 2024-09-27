@@ -25,7 +25,7 @@ app.use(pinia);
 const user = useUserStore();
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL_API;
 axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
+axios.defaults.withXSRFToken = false;
 axios.defaults.headers.common = { 'Authorization': `Bearer ${user.token}` };
 
 // Use Vue Router

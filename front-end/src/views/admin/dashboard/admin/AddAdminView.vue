@@ -44,7 +44,7 @@
 
 <script setup>
 import Button from '@/components/Button.vue';
-import { register } from '@/services/authAdminService'
+import { register } from '@/services/admin/authAdminService'
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 import { ref } from 'vue';

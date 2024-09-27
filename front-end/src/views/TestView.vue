@@ -3,10 +3,8 @@
 </template>
 
 <script setup>
-import { fetchUsersWithBooks } from '@/services/adminService';
+import { fetchBooksWithUsers,deleteBook } from '@/services/admin/adminService';
 
-console.log(fetchUsersWithBooks())
 
-//register();
-
+console.log(fetchBooksWithUsers())
 </script>

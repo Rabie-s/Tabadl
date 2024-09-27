@@ -45,7 +45,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { fetchAdmins,deleteAdmin } from '@/services/authAdminService';
+import { fetchAdmins,deleteAdmin } from '@/services/admin/adminService';
 import TailwindPagination from '@/components/TailwindPagination/TailwindPagination.vue'
 import { toast } from 'vue3-toastify';
 

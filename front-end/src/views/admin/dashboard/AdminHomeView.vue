@@ -16,17 +16,15 @@
 <script setup>
 
 import { computed, onMounted, ref } from 'vue';
-import { getTotalBooks } from '@/services/statisticService'
-import axios from 'axios';
 
 const totalBooks = ref(0)
 const totalUsers = ref(0)
 
 
-onMounted(async () => {
+/* onMounted(async () => {
     totalBooks.value = await axios.get(`v1/admin/statistics/totalBooks`)
     totalUsers.value = await axios.get(`v1/admin/statistics/totalUsers`)
-})
+}) */
 
 
 </script>

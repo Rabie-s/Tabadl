@@ -5,130 +5,133 @@ namespace App\Http\Controllers\Admin\Auth;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\Auth\LoginRequest;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AuthController extends Controller
 {
-    /**
-     * Fetch all admins.
-     *
-     * @return JsonResponse
-     */
-    public function fetchAdmins(): JsonResponse
+    // Register a new admin
+    public function register(Request $request): JsonResponse
     {
+        // Validate incoming request data
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|unique:admins', // Unique email check against admins table
+            'password' => 'required'
+        ]);
+
+        // Create a new admin using validated data
+        Admin::create($validated);
+
         try {
-            // Retrieve all admins
-            $admins = Admin::latest()->paginate(8);
-            return response()->json($admins, 200);
-        } catch (\Exception $e) {
-            // Handle any exceptions and return an error response
-            return response()->json(['error' => 'Failed to fetch admins.'], 500);
+            // Attempt to authenticate admin with 'admin-api' guard
+            $token = auth('admin-api')->attempt($validated);
+            $adminInfo = auth('admin-api')->user();
+
+            // If authentication fails, return unauthorized response
+            if (!$token) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+
+            // Return admin info and token upon successful registration
+            return response()->json([
+                'admin' => $adminInfo,
+                'token' => $token,
+            ], 200);
+        } catch (JWTException $e) {
+            // Catch JWT authentication exceptions and return error response
+            return response()->json('Login error:' . $e, 500);
         }
     }
 
-    /**
-     * Authenticate admin.
-     *
-     * @param LoginRequest $request
-     * @return JsonResponse
-     */
-    public function login(LoginRequest $request): JsonResponse
+    // Admin login
+    public function login(Request $request): JsonResponse
     {
-        // Validate login request
+        // Validate login credentials
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // Attempt to authenticate admin using provided credentials
-        if (Auth::guard('admin')->attempt($credentials)) {
-            // Retrieve authenticated admin
-            $admin = auth()->guard('admin')->user();
+        try {
+            // Attempt to authenticate admin with 'admin-api' guard
+            $token = auth('admin-api')->attempt($credentials);
+            $adminInfo = auth('admin-api')->user();
 
-            // Delete existing tokens to refresh authentication
-            $admin->tokens()->delete();
+            // If authentication fails, return unauthorized response
+            if (!$token) {
+                return response()->json(['error' => 'user name or password is incorrect'], 401);
+            }
 
-            // Create new API token for admin
-            $token = $admin->createToken('apiToken', ['role:admin']);
-
-            // Return admin data and token on successful login
+            // Return admin info and token upon successful login
             return response()->json([
-                'admin' => $admin,
-                'adminToken' => $token->plainTextToken,
+                'admin' => $adminInfo,
+                'adminToken' => $token,
             ], 200);
+        } catch (JWTException $e) {
+            // Catch JWT authentication exceptions and return error response
+            return response()->json('Login error:' . $e, 500);
         }
-
-        // Return error response if authentication fails
-        return response()->json(["The provided credentials do not match our records."], 401);
     }
 
-    /**
-     * Register a new admin.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function register(Request $request): JsonResponse
+    // Get admin information
+    public function adminInfo()
     {
-        // Validate registration request
-        $admin = Admin::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        // Create API token for new admin
-        $token = $admin->createToken('apiToken', ['role:admin']);
-
-        // Login newly registered admin
-        Auth::guard('admin')->login($admin);
-
-        // Return admin data and token on successful registration
-        return response()->json([
-            'admin' => $admin,
-            'adminToken' => $token->plainTextToken,
-        ], 200);
+        try {
+            // Return JSON response with authenticated admin information
+            return response()->json(auth('admin-api')->user());
+        } catch (JWTException $e) {
+            // Catch JWT authentication exceptions and return error response
+            return response()->json('Error:' . $e, 500);
+        }
     }
 
-    /**
-     * Delete an admin.
-     *
-     * @param string $id
-     * @return JsonResponse
-     */
-    public function deleteAdmin(string $id): JsonResponse
+    // Refresh JWT token
+    public function refreshToken()
+    {
+        try {
+            // Refresh JWT token and return as JSON response
+            return response()->json([
+                'token' => auth('admin-api')->refresh(true),
+            ]);
+        } catch (JWTException $e) {
+            // Catch JWT authentication exceptions and return error response
+            return response()->json('Error:' . $e, 500);
+        }
+    }
+
+    // Logout admin
+    public function logout(Request $request)
+    {
+
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Successfully logged out'
+            ],200);
+        } catch (JWTException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to log out, please try again.'
+            ], 500);
+        }
+    }
+
+    // Delete admin profile
+    public function deleteAdminProfile(string $id)
     {
         try {
             // Find admin by ID and delete
             $admin = Admin::findOrFail($id);
             $admin->delete();
-            
-            // Return success message upon successful deletion
             return response()->json(['message' => 'Admin deleted successfully'], 200);
-        } catch (\Exception $e) {
-            // response if admin is not found or deletion fails
-            return response()->json(['error' => 'Admin not found or could not be deleted.'], 404);
+        } catch (ModelNotFoundException $e) {
+            // Catch model not found exceptions and return error response
+            return response()->json(['error' => 'Admin not found'], 404);
         }
-    }
-
-    /**
-     * Logout admin.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function logout(Request $request): JsonResponse
-    {
-        // Delete all tokens associated with authenticated admin
-        $request->user()->tokens()->delete();
-        
-        // Logout admin
-        Auth::guard("admin")->logout();
-        
-        // Return success message upon successful logout
-        return response()->json(['message' => 'Logged out successfully.'], 200);
     }
 }

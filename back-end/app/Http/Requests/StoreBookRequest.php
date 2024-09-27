@@ -24,7 +24,6 @@ class StoreBookRequest extends FormRequest
         return [
             'title' => 'required|string',
             'book_level' => 'required',
-            'image_extension' => 'required',
             'image_path' => 'required|image|mimes:jpg,png,jpeg',
             'status' => 'integer',
             'description' => 'string',

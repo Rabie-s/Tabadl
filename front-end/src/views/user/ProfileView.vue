@@ -1,12 +1,12 @@
 <template>
 
-    <div class="flex">
+    <div class="">
 
-        <div>
+        <div class="absolute top-0">
             <SideNav :toggleSideNav="toggleSideNav" />
         </div>
 
-        <div class="text-left m-2">
+        <div class="m-3">
             <button @click="toggleSideNav = !toggleSideNav" class="text-2xl">
                 <i class="fa-solid fa-bars"></i>
             </button>

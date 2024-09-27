@@ -4,8 +4,9 @@
         <div v-show="props.toggleSideNav" class="w-[288px] h-screen bg-sky-600">
             
             <!-- logo -->
-            <div class="p-4">
+            <div class="p-4 flex justify-between items-center">
                 <h1 class="text-3xl text-white uppercase font-bold">حسابي</h1>
+                <i @click="toggleSideNav = false" class="fa-solid fa-xmark text-2xl cursor-pointer text-white"></i>
             </div>
             <!-- end-logo -->
 

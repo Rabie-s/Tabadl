@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import axios from 'axios';
-import { register, login, logout } from "@/services/authAdminService";
+import { register, login, logout } from "@/services/admin/authAdminService";
 import { toast } from 'vue3-toastify';
 import router from "@/router";
 
@@ -57,7 +57,7 @@ export const useAdminStore = defineStore({
 
         // Action to log out user
         async logoutResult() {
-            const result = await logout()
+            const result = await logout(this.adminToken)
             if (result.status === 200) {
                 this.adminData = null;
                 this.adminToken = null;

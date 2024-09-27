@@ -14,7 +14,7 @@ async function fetchCsrfCookie() {
 
 export async function fetchBooks(page, status = '',bookLevel='', search = '') {
     try {
-        const response = await axios.get(`v1/books?page=${page}&status=${status}&book_level=${bookLevel}&search=${search}`);
+        const response = await axios.get(`user/books?page=${page}&status=${status}&book_level=${bookLevel}&search=${search}`);
         return response
     } catch (error) {
         console.error('Error fetching books:', error);
@@ -23,7 +23,7 @@ export async function fetchBooks(page, status = '',bookLevel='', search = '') {
 
 export async function fetchBook(bookId) {
     try {
-        const response = await axios.get(`v1/books/${bookId}`)
+        const response = await axios.get(`user/books/${bookId}`)
         return response
     } catch (error) {
         console.error('Error fetching book:', error)
@@ -33,17 +33,16 @@ export async function fetchBook(bookId) {
 // Function to add a book
 export async function addBook(data, userId) {
     // Call the function to fetch CSRF cookie before adding a book
-    await fetchCsrfCookie();
+    //await fetchCsrfCookie();
 
     try {
         // Make a POST request to add a book
         const result = await axios.post(
-            'v1/books', // Endpoint URL
+            'user/books', // Endpoint URL
             {
                 // Book data to be sent in the request
                 title: data.value.title,
                 book_level:data.value.bookLevel,
-                image_extension: data.value.imageExtension,
                 image_path: data.value.image,
                 status: data.value.status,
                 description: data.value.description,
@@ -72,7 +71,7 @@ export async function deleteBook(bookId) {
 
     try {
         // Make a POST request to delete a book
-        const result = await axios.delete(`v1/books/${bookId}`)
+        const result = await axios.delete(`user/books/${bookId}`)
 
         // Return the status of the request
         return result.status;
@@ -89,7 +88,7 @@ export async function completeBook(bookId, done) {
 
     try {
         // Make a POST request to complete a book
-        const result = await axios.put('v1/completed', {
+        const result = await axios.put('user/completed', {
             id: bookId,
             done: done
         })

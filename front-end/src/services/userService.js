@@ -15,18 +15,18 @@ async function fetchCsrfCookie() {
 export async function register(data) {
     await fetchCsrfCookie();
     try {
-        const result = await axios.post('register', {
+        const result = await axios.post('user/auth/register', {
             name: data.name,
             email: data.email,
-            phone_number: data.country_code+data.phone_number,
+            phone_number: data.country_code + data.phone_number,
             password: data.password
         });
-
+        console.log(result)
         return result
 
     } catch (error) {
         // Handle registration errors
-        console.log('Register error: '+error)
+        console.log('Register error: ' + error)
     }
 }
 
@@ -34,7 +34,7 @@ export async function login(data) {
     await fetchCsrfCookie();
 
     try {
-        const result = await axios.post('login', {
+        const result = await axios.post('user/auth/login', {
             email: data.email,
             password: data.password
         });
@@ -44,11 +44,15 @@ export async function login(data) {
     }
 }
 
-export async function logout() {
-    await fetchCsrfCookie();
+export async function logout(token) {
+    //await fetchCsrfCookie();
 
     try {
-        const result = await axios.post('logout');
+        const result = await axios.post('user/auth/logout', {}, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         return result
     } catch (error) {
         console.log('Logout error: ' + error)

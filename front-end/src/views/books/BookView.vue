@@ -2,7 +2,11 @@
   <div class="container mx-auto">
     <div class="md:mx-60">
       <div class="flex flex-row-reverse">
-        <button @click="getBack" class="">Get back</button>
+        
+        <button @click="getBack" class="py-1 px-2 bg-gray-100 rounded-lg">
+          الرجوع
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
       </div>
 
       <!-- Loading indicator -->
@@ -58,7 +62,7 @@ async function getBook(id) {
 
   const bookResult = await fetchBook(id)
 
-  if (bookResult.status === 201) {
+  if (bookResult.status === 200) {
     book.value = bookResult.data[0]
     isLoading.value = false
   } else {

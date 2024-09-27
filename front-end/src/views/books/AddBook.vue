@@ -128,7 +128,7 @@ async function submit() {
 
     if (result) {
         const addBookResult = await addBook(formData, user.userData.id)
-        if (addBookResult === 201) {
+        if (addBookResult === 200) {
             toast.success('تم نشر الاعلان بنجاح', { "theme": "colored" })
             clear()
         } else {
