@@ -41,7 +41,6 @@ export async function fetchAdmins(page){
 }
 
 
-
 export async function deleteAdmin(adminId) {
     // Call the function to fetch CSRF cookie before deleting a book
    // await fetchCsrfCookie();

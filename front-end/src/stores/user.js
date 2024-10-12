@@ -58,7 +58,7 @@ export const useUserStore = defineStore({
         // Action to log out user
         async logoutResult() {
             const result = await logout(this.token)
-            if (result.status === 200) {
+            if (true) {//result.status === 200
                 this.userData = null;
                 this.token = null;
                 this.isAuth = false;

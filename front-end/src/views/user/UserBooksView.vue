@@ -17,12 +17,12 @@
                         <td class="px-4 py-2 whitespace-nowrap text-base">{{ book.title }}</td>
                         <td class="px-4 py-2 whitespace-nowrap text-base">{{ book.created_at }}</td>
                         <td class="px-4 py-2 whitespace-nowrap text-base">
-                            <Button @click="handelCompleteBook(book.id, true)" class="w-12 h-8" color="green">
+                            <Button @click="handleCompleteBook(book.id, true)" class="w-12 h-8" color="green">
                                 نعم
                             </Button>
                         </td>
                         <td class="px-4 py-2 whitespace-nowrap text-base">
-                            <Button @click="handelDeleteBook(book.id)" class="w-12 h-8" color="red">
+                            <Button @click="handleDeleteBook(book.id)" class="w-12 h-8" color="red">
                                 <i class="fa-solid fa-trash-can"></i>
                             </Button>
                         </td>
@@ -34,50 +34,51 @@
 </template>
 
 <script setup>
-import Button from '@/components/Button.vue'
-import axios from 'axios'
+import Button from '@/components/Button.vue';
 import { onMounted, ref } from 'vue';
-import { completeBook, deleteBook } from '@/services/bookService';
+import { completeBook, deleteBook,fetchUserBooks } from '@/services/bookService';
 import { toast } from 'vue3-toastify';
 
+const booksData = ref([]); // Initialize with an empty array
 
-const booksData = ref({});
-
-
-// Function to fetch all books
-async function getAllBooks() {
+// Function to fetch user books
+async function handleFetchUserBooks() {
     try {
-        const response = await axios.get('user/userBooks');
-        booksData.value = response.data;
+        const response = await fetchUserBooks();
+        booksData.value = response.data || []; // Fallback to an empty array if no data
+        console.log(response);
     } catch (error) {
-        console.error('Error fetching books:', error);
+        console.error('Error fetching user books:', error);
+        toast.error('فشل في تحميل الكتب');
     }
 }
 
-// Function to fetch all books
-async function handelCompleteBook(bookId, boolean) {
-    await completeBook(bookId, boolean)
-    await getAllBooks()
+// Function to complete a book
+async function handleCompleteBook(bookId, boolean) {
+    try {
+        await completeBook(bookId, boolean);
+        await handleFetchUserBooks();
+        toast.success('تم تحديث حالة الكتاب بنجاح');
+    } catch (error) {
+        console.error('Error completing book:', error);
+        toast.error('فشل في تحديث حالة الكتاب');
+    }
 }
 
-// Function to delete book
-async function handelDeleteBook(bookId) {
-    await deleteBook(bookId)
-    await getAllBooks()
-    toast.success('تم حذف الاعلان بنجاح', { "theme": "colored" })
+// Function to delete a book
+async function handleDeleteBook(bookId) {
+    try {
+        await deleteBook(bookId);
+        await handleFetchUserBooks();
+        toast.success('تم حذف الاعلان بنجاح', { theme: 'colored' });
+    } catch (error) {
+        console.error('Error deleting book:', error);
+        toast.error('فشل في حذف الاعلان');
+    }
 }
-
-// Function to get full image path for a book
-function getImagePath(imagePathFromServer) {
-    return `${imagePath}${imagePathFromServer}`;
-}
-
-
 
 // Fetch all books on component mount
 onMounted(() => {
-    getAllBooks();
+    handleFetchUserBooks();
 });
-
-
 </script>

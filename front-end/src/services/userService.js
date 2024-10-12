@@ -1,6 +1,7 @@
 // Import Axios for making HTTP requests
 import axios from 'axios';
 
+
 // Function to fetch CSRF cookie
 async function fetchCsrfCookie() {
     try {
@@ -13,7 +14,7 @@ async function fetchCsrfCookie() {
 }
 
 export async function register(data) {
-    await fetchCsrfCookie();
+    //await fetchCsrfCookie();
     try {
         const result = await axios.post('user/auth/register', {
             name: data.name,
@@ -31,7 +32,7 @@ export async function register(data) {
 }
 
 export async function login(data) {
-    await fetchCsrfCookie();
+    //await fetchCsrfCookie();
 
     try {
         const result = await axios.post('user/auth/login', {
@@ -48,13 +49,10 @@ export async function logout(token) {
     //await fetchCsrfCookie();
 
     try {
-        const result = await axios.post('user/auth/logout', {}, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const result = await axios.post('user/auth/logout');
         return result
     } catch (error) {
         console.log('Logout error: ' + error)
     }
 }
+

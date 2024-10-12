@@ -1,6 +1,8 @@
 // Import Axios for making HTTP requests
 import axios from 'axios';
+import { useUserStore } from '@/stores/user.js'
 
+const user = useUserStore()
 // Function to fetch CSRF cookie
 async function fetchCsrfCookie() {
     try {
@@ -12,7 +14,7 @@ async function fetchCsrfCookie() {
     }
 }
 
-export async function fetchBooks(page, status = '',bookLevel='', search = '') {
+export async function fetchBooks(page, status = '', bookLevel = '', search = '') {
     try {
         const response = await axios.get(`user/books?page=${page}&status=${status}&book_level=${bookLevel}&search=${search}`);
         return response
@@ -42,7 +44,7 @@ export async function addBook(data, userId) {
             {
                 // Book data to be sent in the request
                 title: data.value.title,
-                book_level:data.value.bookLevel,
+                book_level: data.value.bookLevel,
                 image_path: data.value.image,
                 status: data.value.status,
                 description: data.value.description,
@@ -67,7 +69,7 @@ export async function addBook(data, userId) {
 
 export async function deleteBook(bookId) {
     // Call the function to fetch CSRF cookie before deleting a book
-    await fetchCsrfCookie();
+    //await fetchCsrfCookie();
 
     try {
         // Make a POST request to delete a book
@@ -84,7 +86,7 @@ export async function deleteBook(bookId) {
 
 export async function completeBook(bookId, done) {
     // Call the function to fetch CSRF cookie before completing a book
-    await fetchCsrfCookie();
+    //await fetchCsrfCookie();
 
     try {
         // Make a POST request to complete a book
@@ -99,6 +101,17 @@ export async function completeBook(bookId, done) {
     } catch (error) {
         // Log any errors that occur during the request
         console.log(error);
+    }
+}
+
+export async function fetchUserBooks() {
+    //await fetchCsrfCookie();
+    try {
+        const result = await axios.get('user/userBooks');
+        return result
+        
+    } catch (error) {
+        console.log(error)
     }
 }
 

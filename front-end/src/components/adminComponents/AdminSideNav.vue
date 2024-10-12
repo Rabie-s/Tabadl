@@ -95,8 +95,8 @@ import { ref } from 'vue';
 const admin = useAdminStore()
 const toggleAdminsSubMenu = ref(false)
 
-function handelLogout() {
-    admin.logoutResult();
+async function handelLogout() {
+    await admin.logoutResult();
 }
 
 const props = defineProps({

@@ -3,8 +3,16 @@
 </template>
 
 <script setup>
-import { fetchBooksWithUsers,deleteBook } from '@/services/admin/adminService';
+import {fetchUserBooks} from '@/services/user/bookService.js'
+import { onMounted } from 'vue';
 
+async function handel(){
+    return await fetchUserBooks();
+}
 
-console.log(fetchBooksWithUsers())
+onMounted(()=>{
+    console.log(handel());
+    
+})
+
 </script>

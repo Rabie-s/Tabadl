@@ -4,10 +4,12 @@ namespace App\Http\Controllers\User;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookResource;
 use App\Http\Requests\StoreBookRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 
 
 class BookController extends Controller
@@ -75,7 +77,7 @@ class BookController extends Controller
             $authenticatedUser->books()->create([
                 'title' => $request->title,
                 'book_level' => $request->book_level,
-                'image_path' => $image ?? null, // Optional image path
+                'image_path' => $image, // Optional image path
                 'status' => $request->status,
                 'description' => $request->description,
                 'active' => $request->active ?? true, // Set default active status
@@ -115,7 +117,7 @@ class BookController extends Controller
      */
     public function destroy(string $id)
     {
-         try {
+        try {
             // Get the authenticated user
             $authenticatedUser = auth()->guard('user-api')->user();
 
@@ -133,7 +135,7 @@ class BookController extends Controller
         } catch (ModelNotFoundException $e) {
             // Return error response if any exception occurs
             return response()->json(['error' => 'Failed to delete book'], 500);
-        } 
+        }
     }
 
     public function completed(Request $request)
@@ -157,7 +159,7 @@ class BookController extends Controller
         }
     }
 
-    public function showUserBooks()
+    public function showUserBooks(): JsonResponse
     {
         try {
             // Get the authenticated user

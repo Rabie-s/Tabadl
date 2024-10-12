@@ -22,15 +22,28 @@ pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 
 // Axios setup for HTTP requests
-const user = useUserStore();
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL_API;
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = false;
-axios.defaults.headers.common = { 'Authorization': `Bearer ${user.token}` };
+
+// Create an Axios interceptor to set the authorization header
+axios.interceptors.request.use(config => {
+  const user = useUserStore();
+  const userToken = user.token;
+
+  if (userToken) {
+    config.headers['Authorization'] = `Bearer ${userToken}`;
+  } else {
+    delete config.headers['Authorization'];
+  }
+
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 // Use Vue Router
 app.use(router);
 
 // Mount the Vue app
 app.mount('#app');
-
