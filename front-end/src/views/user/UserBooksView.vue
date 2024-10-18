@@ -36,7 +36,7 @@
 <script setup>
 import Button from '@/components/Button.vue';
 import { onMounted, ref } from 'vue';
-import { completeBook, deleteBook,fetchUserBooks } from '@/services/bookService';
+import { completeBook, deleteBook, fetchUserBooks } from '@/services/bookService';
 import { toast } from 'vue3-toastify';
 
 const booksData = ref([]); // Initialize with an empty array
@@ -46,10 +46,9 @@ async function handleFetchUserBooks() {
     try {
         const response = await fetchUserBooks();
         booksData.value = response.data || []; // Fallback to an empty array if no data
-        console.log(response);
     } catch (error) {
         console.error('Error fetching user books:', error);
-        toast.error('فشل في تحميل الكتب');
+        toast.error('فشل في تحميل الكتب', { "theme": "colored" });
     }
 }
 
@@ -58,10 +57,10 @@ async function handleCompleteBook(bookId, boolean) {
     try {
         await completeBook(bookId, boolean);
         await handleFetchUserBooks();
-        toast.success('تم تحديث حالة الكتاب بنجاح');
+        toast.success('تم تحديث حالة الكتاب بنجاح', { "theme": "colored" });
     } catch (error) {
         console.error('Error completing book:', error);
-        toast.error('فشل في تحديث حالة الكتاب');
+        toast.error('فشل في تحديث حالة الكتاب', { "theme": "colored" });
     }
 }
 
@@ -73,7 +72,7 @@ async function handleDeleteBook(bookId) {
         toast.success('تم حذف الاعلان بنجاح', { theme: 'colored' });
     } catch (error) {
         console.error('Error deleting book:', error);
-        toast.error('فشل في حذف الاعلان');
+        toast.error('فشل في حذف الاعلان', { "theme": "colored" });
     }
 }
 

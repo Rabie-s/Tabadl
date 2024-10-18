@@ -6,7 +6,6 @@ use File;
 use App\Models\Book;
 use App\Models\User;
 use App\Models\Admin;
-use GuzzleHttp\Psr7\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -55,7 +54,8 @@ class AdminController extends Controller
         }
     }
 
-    public function fetchAdmins(){
+    public function fetchAdmins()
+    {
         try {
             // Retrieve all admins
             $admins = Admin::latest()->paginate(8);
@@ -66,17 +66,48 @@ class AdminController extends Controller
         }
     }
 
-    public function deleteAdmin(string $id){
+    public function deleteAdmin(string $id)
+    {
         try {
             // Find admin by ID and delete
             $admin = Admin::findOrFail($id);
             $admin->delete();
-            
+
             // Return success message upon successful deletion
             return response()->json(['message' => 'Admin deleted successfully'], 200);
         } catch (ModelNotFoundException $e) {
             // response if admin is not found or deletion fails
             return response()->json(['error' => 'Admin not found or could not be deleted.'], 404);
+        }
+    }
+
+    public function countTotalBooks()
+    {
+        try {
+            return response()->json(Book::count(), 200);
+        } catch (ModelNotFoundException $e) {
+            // response if admin is not found or deletion fails
+            return response()->json(['error' => 'No data found.'], 404);
+        }
+    }
+
+    public function countTotalUsers()
+    {
+        try {
+            return response()->json(User::count(), 200);
+        } catch (ModelNotFoundException $e) {
+            // response if admin is not found or deletion fails
+            return response()->json(['error' => 'No data found.'], 404);
+        }
+    }
+
+    public function countTotalAdmins()
+    {
+        try {
+            return response()->json(Admin::count(), 200);
+        } catch (ModelNotFoundException $e) {
+            // response if admin is not found or deletion fails
+            return response()->json(['error' => 'No data found.'], 404);
         }
     }
 }

@@ -57,8 +57,8 @@ export const useAdminStore = defineStore({
 
         // Action to log out user
         async logoutResult() {
-            const result = await logout(this.adminToken)
-            if (result.status === 200) {
+            const result = await logout()
+            if (true) {//result.status === 200
                 this.adminData = null;
                 this.adminToken = null;
                 this.isAuth = false;

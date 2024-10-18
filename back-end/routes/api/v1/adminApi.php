@@ -12,3 +12,9 @@ Route::delete('deleteBook/{id}', [AdminController::class, 'deleteBook'])->middle
 Route::get('fetchAdmins', [AdminController::class, 'fetchAdmins'])->middleware('auth:admin-api');
 
 Route::delete('deleteAdmin/{id}', [AdminController::class, 'deleteAdmin'])->middleware('auth:admin-api');
+
+Route::get('countTotalBooks', [AdminController::class, 'countTotalBooks'])->middleware('auth:admin-api');
+
+Route::get('countTotalUsers', [AdminController::class, 'countTotalUsers'])->middleware('auth:admin-api');
+
+Route::get('countTotalAdmins', [AdminController::class, 'countTotalAdmins'])->middleware('auth:admin-api');
