@@ -47,7 +47,7 @@ export async function login(data) {
     }
 }
 
-export async function logout(token) {
+export async function logout() {
     //await fetchCsrfCookie();
 
     try {

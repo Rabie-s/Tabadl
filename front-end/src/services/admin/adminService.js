@@ -6,7 +6,6 @@ import adminAxios from '@/services/admin/adminAxios.js';
 export async function fetchBooksWithUsers(page){
     try {
         const response = await adminAxios.get(`admin/fetchBooksWithUsers?page=${page}`);
-        console.log(response)
         return response
     } catch (error) {
         console.error('Error fetching books:', error);
@@ -24,7 +23,7 @@ export async function fetchUsers(page){
 
 export async function deleteBook(id){
     try {
-        const response = await adminAxios.get(`admin/deleteBook/${id}`);
+        const response = await adminAxios.delete(`admin/deleteBook/${id}`);
         return response
     } catch (error) {
         console.error('Error deleting book:', error);
@@ -51,6 +50,34 @@ export async function deleteAdmin(adminId) {
 
         // Return the status of the request
         return result.status;
+
+    } catch (error) {
+        // Log any errors that occur during the request
+        console.log(error);
+    }
+}
+
+export async function countTotalBooks(){
+    try {
+        // Make a POST request to delete a book
+        const result = await adminAxios.get(`admin/countTotalBooks`)
+
+        // Return the status of the request
+        return result
+
+    } catch (error) {
+        // Log any errors that occur during the request
+        console.log(error);
+    }
+}
+
+export async function countTotalUsers(){
+    try {
+        // Make a POST request to delete a book
+        const result = await adminAxios.get(`admin/countTotalUsers`)
+
+        // Return the status of the request
+        return result
 
     } catch (error) {
         // Log any errors that occur during the request
