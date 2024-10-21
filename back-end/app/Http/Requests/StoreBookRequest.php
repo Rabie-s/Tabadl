@@ -26,7 +26,7 @@ class StoreBookRequest extends FormRequest
             'book_level' => 'required',
             'image_path' => 'required|image|mimes:jpg,png,jpeg',
             'status' => 'integer',
-            'description' => 'string',
+            'description' => 'string|nullable',
             'active' => 'boolean',
             'done' => 'boolean',
         ];

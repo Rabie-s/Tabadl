@@ -117,7 +117,7 @@ const rules = {
     title: { required },
     bookLevel: { required },
     status: { required },
-    description: { required }
+    description: {  }
 }
 
 const v$ = useVuelidate(rules, formData)

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('image_path');
             $table->tinyInteger('book_level')->default(1)->comment('diploma=>1|bachelors=>2');
             $table->tinyInteger('status')->default(1)->comment('offered=>1|wanted=>2');
-            $table->tinyText('description')->comment('Short description about this book');
+            $table->tinyText('description')->nullable()->comment('Short description about this book');
             $table->boolean('active')->default(true);
             $table->boolean('done')->default(false);
             $table->foreignId('user_id')->constrained();
