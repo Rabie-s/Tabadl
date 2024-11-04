@@ -17,6 +17,7 @@
       <div v-else class="bg-gray-200 p-2 m-2 rounded-lg space-y-4">
         <img v-if="book.image_path" class="h-96 w-full rounded-lg" :src="imagePath + book.image_path" alt="Book Cover">
         <h1 class="text-lg">{{ book.title }}</h1>
+        <p v-if="book.description" class="text-base">{{ book.description }}</p>
         <h2 class="text-lg">{{ book.created_at }}</h2>
         <!-- WhatsApp button -->
         <a v-if="book.user" aria-label="Chat on WhatsApp"
